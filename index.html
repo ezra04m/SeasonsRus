@@ -1,10 +1,11 @@
 
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AURA Studio | Curated Design</title>
+  <title>Lumen Studio | Architectural Lighting</title>
   
   <!-- Premium Typography -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,7 +21,6 @@
     }
 
     :root {
-      /* Refined Warm Palette (Elevation over flat yellow) */
       --bg-canvas: #FAFAF7;
       --surface: #FFFFFF;
       --surface-subtle: #F3F3EE;
@@ -34,8 +34,8 @@
       --text-muted: #6B6A65;
       --text-inverse: #FFFFFF;
 
-      --font-display: 'Syne', sans-serif;
-      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
       --shadow-sm: 0 2px 6px rgba(20, 20, 19, 0.04);
       --shadow-md: 0 10px 24px -4px rgba(20, 20, 19, 0.06);
@@ -48,12 +48,17 @@
       --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       background-color: var(--bg-canvas);
       color: var(--text-main);
       font-family: var(--font-body);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     /* --- LAYOUT WRAPPER --- */
@@ -72,6 +77,13 @@
       background: rgba(250, 250, 247, 0.85);
       border-bottom: 1px solid var(--surface-border);
       padding: 1.25rem 0;
+      transition: var(--transition);
+    }
+
+    .nav.scrolled {
+      padding: 0.9rem 0;
+      box-shadow: var(--shadow-sm);
+      background: rgba(250, 250, 247, 0.95);
     }
 
     .nav-inner {
@@ -112,12 +124,14 @@
       cursor: pointer;
       text-decoration: none;
       transition: var(--transition);
+      user-select: none;
     }
 
     .btn-primary {
       background: var(--text-main);
       color: var(--text-inverse);
       box-shadow: var(--shadow-sm);
+      position: relative;
     }
 
     .btn-primary:hover {
@@ -152,6 +166,21 @@
       width: 18px;
       height: 18px;
       stroke-width: 2;
+    }
+
+    .cart-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--text-main);
+      font-size: 0.72rem;
+      font-weight: 800;
+      min-width: 20px;
+      height: 20px;
+      border-radius: var(--radius-full);
+      padding: 0 4px;
+      margin-left: 2px;
     }
 
     /* --- HERO SECTION --- */
@@ -222,6 +251,7 @@
       overflow: hidden;
       aspect-ratio: 4 / 5;
       box-shadow: var(--shadow-lg);
+      background: var(--surface-subtle);
     }
 
     .hero-image {
@@ -240,7 +270,7 @@
       position: absolute;
       bottom: 2rem;
       left: -2rem;
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       backdrop-filter: blur(12px);
       padding: 1.25rem 1.5rem;
       border-radius: var(--radius-md);
@@ -249,6 +279,12 @@
       display: flex;
       align-items: center;
       gap: 1rem;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     .floating-indicator {
@@ -260,6 +296,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-shrink: 0;
     }
 
     .floating-card-meta h4 {
@@ -447,7 +484,6 @@
       line-height: 1.6;
     }
 
-    /* Modern Designed Input & Action System */
     .subscribe-box {
       display: flex;
       align-items: center;
@@ -499,6 +535,184 @@
       background: #FFF;
       color: #000;
       transform: translateX(2px);
+    }
+
+    /* --- CART SLIDE-OVER DRAWER --- */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 20, 19, 0.45);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .cart-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      z-index: 101;
+      box-shadow: var(--shadow-lg);
+      transform: translateX(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cart-overlay.open .cart-drawer {
+      transform: translateX(0);
+    }
+
+    .cart-header {
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--surface-border);
+    }
+
+    .cart-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+    }
+
+    .cart-close-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0.5rem;
+      display: flex;
+      border-radius: 50%;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .cart-close-btn:hover {
+      color: var(--text-main);
+      background: var(--surface-subtle);
+    }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+    }
+
+    .cart-empty-message {
+      text-align: center;
+      margin: auto 0;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .cart-item {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--surface-subtle);
+    }
+
+    .cart-item-image {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      background: var(--surface-subtle);
+    }
+
+    .cart-item-info {
+      flex: 1;
+    }
+
+    .cart-item-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .cart-item-price {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .cart-item-quantity {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.4rem;
+    }
+
+    .btn-qty {
+      background: var(--surface-subtle);
+      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+
+    .cart-footer {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--surface-border);
+      background: var(--bg-canvas);
+    }
+
+    .cart-subtotal {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    /* --- TOAST NOTIFICATIONS --- */
+    .toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--text-main);
+      color: var(--text-inverse);
+      padding: 0.85rem 1.4rem;
+      border-radius: var(--radius-full);
+      font-size: 0.9rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
     }
 
     /* --- FOOTER --- */
@@ -560,24 +774,28 @@
         gap: 1rem;
         text-align: center;
       }
+      .cart-drawer {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Top Sticky Navigation -->
-  <header class="nav">
+  <header class="nav" id="mainNav">
     <div class="container nav-inner">
       <a href="#" class="brand">Lumen Studio</a>
       
       <div class="nav-actions">
-        <!-- Direct Quick Checkout Button -->
-        <a href="#checkout" class="btn btn-primary">
+        <!-- Interactive Cart Trigger Button -->
+        <button class="btn btn-primary" id="openCartBtn" aria-label="Open shopping cart">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
           Checkout
-        </a>
+          <span class="cart-badge" id="cartCount">0</span>
+        </button>
       </div>
     </div>
   </header>
@@ -598,7 +816,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
-            <a href="#about" class="btn btn-outline">Specifications</a>
+            <a href="#collection" class="btn btn-outline">Specifications</a>
           </div>
         </div>
 
@@ -637,13 +855,14 @@
 
       <div class="product-grid">
         <!-- Item 1 -->
-        <article class="product-card">
+        <article class="product-card" data-id="1" data-name="Komorebi Sconce" data-price="285" data-image="https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80">
           <div class="product-image-ratio">
             <span class="product-badge">New Release</span>
             <img 
               src="https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80" 
               alt="Amber bedside brass fixture" 
               class="product-image"
+              loading="lazy"
             />
           </div>
           <div class="product-body">
@@ -651,7 +870,7 @@
             <p class="product-desc">Fluted brass with hand-blown tint glass. Soft directional beam.</p>
             <div class="product-footer">
               <span class="product-price">$285</span>
-              <button class="btn-icon-checkout">
+              <button class="btn-icon-checkout add-to-cart-trigger">
                 <span>Add to Cart</span>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -662,12 +881,13 @@
         </article>
 
         <!-- Item 2 -->
-        <article class="product-card">
+        <article class="product-card" data-id="2" data-name="Monolith Desk Lamp" data-price="340" data-image="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80">
           <div class="product-image-ratio">
             <img 
               src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80" 
               alt="Minimal desk lighting fixture" 
               class="product-image"
+              loading="lazy"
             />
           </div>
           <div class="product-body">
@@ -675,7 +895,7 @@
             <p class="product-desc">Solid stone pedestal with integrated smooth touch dimmer.</p>
             <div class="product-footer">
               <span class="product-price">$340</span>
-              <button class="btn-icon-checkout">
+              <button class="btn-icon-checkout add-to-cart-trigger">
                 <span>Add to Cart</span>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -686,13 +906,14 @@
         </article>
 
         <!-- Item 3 -->
-        <article class="product-card">
+        <article class="product-card" data-id="3" data-name="Aura Pendant" data-price="410" data-image="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=800&q=80">
           <div class="product-image-ratio">
             <span class="product-badge">Limited 50 Pcs</span>
             <img 
               src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=800&q=80" 
               alt="Accent pendant fixture" 
               class="product-image"
+              loading="lazy"
             />
           </div>
           <div class="product-body">
@@ -700,7 +921,7 @@
             <p class="product-desc">Suspended spun copper disc producing 360-degree halo light.</p>
             <div class="product-footer">
               <span class="product-price">$410</span>
-              <button class="btn-icon-checkout">
+              <button class="btn-icon-checkout add-to-cart-trigger">
                 <span>Add to Cart</span>
                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -720,8 +941,7 @@
           <h2 class="newsletter-title">Receive new releases before the public archive.</h2>
           <p class="newsletter-text">Join our private list. We dispatch notifications exclusively upon batch releases and architectural showcases.</p>
           
-          <!-- Styled Input Container with Action Button Inside -->
-          <form class="subscribe-box" onsubmit="event.preventDefault();">
+          <form class="subscribe-box" id="newsletterForm">
             <input 
               type="email" 
               class="subscribe-input" 
@@ -740,11 +960,184 @@
     </section>
   </main>
 
+  <!-- Slide-Over Cart Drawer -->
+  <div class="cart-overlay" id="cartOverlay">
+    <div class="cart-drawer" role="dialog" aria-modal="true" aria-labelledby="cartDrawerTitle">
+      <div class="cart-header">
+        <h3 class="cart-title" id="cartDrawerTitle">Your Bag</h3>
+        <button class="cart-close-btn" id="closeCartBtn" aria-label="Close cart">
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="cart-items" id="cartItemsList">
+        <p class="cart-empty-message">Your shopping bag is currently empty.</p>
+      </div>
+
+      <div class="cart-footer">
+        <div class="cart-subtotal">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">$0.00</span>
+        </div>
+        <button class="btn btn-primary" style="width: 100%;" id="checkoutActionBtn">Proceed to Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Micro Toast System -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <footer class="container footer">
     <p>&copy; 2025 Lumen Architectural Studio. All rights reserved.</p>
     <p>Terms &amp; Dispatches</p>
   </footer>
 
+  <script>
+    // --- APP STATE & CART SYSTEM ---
+    const cart = [];
+
+    // Elements
+    const nav = document.getElementById('mainNav');
+    const openCartBtn = document.getElementById('openCartBtn');
+    const closeCartBtn = document.getElementById('closeCartBtn');
+    const cartOverlay = document.getElementById('cartOverlay');
+    const cartItemsList = document.getElementById('cartItemsList');
+    const cartCount = document.getElementById('cartCount');
+    const cartSubtotal = document.getElementById('cartSubtotal');
+    const toastContainer = document.getElementById('toastContainer');
+    const newsletterForm = document.getElementById('newsletterForm');
+
+    // Sticky nav scroll styling
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 20) {
+        nav.classList.add('scrolled');
+      } else {
+        nav.classList.remove('scrolled');
+      }
+    });
+
+    // Cart Open / Close
+    function toggleCart(open = true) {
+      if (open) {
+        cartOverlay.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      } else {
+        cartOverlay.classList.remove('open');
+        document.body.style.overflow = '';
+      }
+    }
+
+    openCartBtn.addEventListener('click', () => toggleCart(true));
+    closeCartBtn.addEventListener('click', () => toggleCart(false));
+    cartOverlay.addEventListener('click', (e) => {
+      if (e.target === cartOverlay) toggleCart(false);
+    });
+
+    // Escape Key support
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && cartOverlay.classList.contains('open')) {
+        toggleCart(false);
+      }
+    });
+
+    // Toast Notification helper
+    function showToast(message) {
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerText = message;
+      toastContainer.appendChild(toast);
+
+      requestAnimationFrame(() => toast.classList.add('show'));
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+      }, 3000);
+    }
+
+    // Add To Cart Handlers
+    document.querySelectorAll('.add-to-cart-trigger').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const card = e.target.closest('.product-card');
+        const id = card.dataset.id;
+        const name = card.dataset.name;
+        const price = parseFloat(card.dataset.price);
+        const image = card.dataset.image;
+
+        addToCart({ id, name, price, image });
+      });
+    });
+
+    function addToCart(product) {
+      const existing = cart.find(item => item.id === product.id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      updateCartUI();
+      showToast(`Added "${product.name}" to cart`);
+    }
+
+    function changeQuantity(id, delta) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+
+      item.qty += delta;
+      if (item.qty <= 0) {
+        const idx = cart.indexOf(item);
+        cart.splice(idx, 1);
+      }
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((acc, cur) => acc + cur.qty, 0);
+      const subtotal = cart.reduce((acc, cur) => acc + (cur.price * cur.qty), 0);
+
+      cartCount.textContent = totalItems;
+      cartSubtotal.textContent = `$${subtotal.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+      if (cart.length === 0) {
+        cartItemsList.innerHTML = `<p class="cart-empty-message">Your shopping bag is currently empty.</p>`;
+        return;
+      }
+
+      cartItemsList.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+          <div class="cart-item-info">
+            <h4 class="cart-item-name">${item.name}</h4>
+            <div class="cart-item-price">$${item.price}</div>
+            <div class="cart-item-quantity">
+              <button class="btn-qty" onclick="changeQuantity('${item.id}', -1)" aria-label="Decrease quantity">-</button>
+              <span>${item.qty}</span>
+              <button class="btn-qty" onclick="changeQuantity('${item.id}', 1)" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Checkout Action
+    document.getElementById('checkoutActionBtn').addEventListener('click', () => {
+      if (cart.length === 0) {
+        showToast('Your bag is empty');
+        return;
+      }
+      showToast('Proceeding to secure checkout...');
+    });
+
+    // Newsletter handling
+    newsletterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = newsletterForm.querySelector('input');
+      showToast(`Thank you for subscribing, ${input.value}`);
+      input.value = '';
+    });
+  </script>
 </body>
 </html>
 ```
