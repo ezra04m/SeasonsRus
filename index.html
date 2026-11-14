@@ -5,9 +5,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DEADSTOCK // UNRELEASED ARCHIVES</title>
+  <title>DEADSTOCK // ARCHIVE STORE</title>
   
-  <!-- Styling & Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,7 +22,6 @@
             hazard: '#ff3b00',
             void: '#070707',
             crude: '#121212',
-            concrete: '#1e1e1e'
           },
           fontFamily: {
             heading: ['Syne', 'sans-serif'],
@@ -38,461 +36,282 @@
     ::selection { background: #ccff00; color: #000; }
     .glitch-border { border: 2px solid #222; }
     .glitch-border:hover { border-color: #ccff00; }
-    .crt-line {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-      background-size: 100% 3px, 6px 100%;
-      pointer-events: none;
-    }
-    .editable-active:focus {
-      outline: 2px dashed #ccff00;
-      background: rgba(204, 255, 0, 0.05);
+    .editable-box:focus {
+      outline: 2px dashed #ccff00 !important;
+      background: rgba(204, 255, 0, 0.08) !important;
     }
   </style>
 </head>
-<body class="bg-void text-zinc-300 font-mono antialiased min-h-screen relative selection:bg-acid selection:text-black">
+<body class="bg-void text-zinc-300 font-mono antialiased min-h-screen">
 
-  <div class="fixed inset-0 crt-line z-40 pointer-events-none"></div>
-
-  <!-- ========================================== -->
-  <!-- OWNER / ADMIN BAR (ONLY YOU SEE THIS) -->
-  <!-- ========================================== -->
-  <aside id="adminBar" class="hidden fixed top-0 inset-x-0 bg-hazard text-black px-4 py-2 z-50 flex items-center justify-between font-mono text-xs font-bold shadow-2xl border-b-2 border-black">
-    <div class="flex items-center gap-3">
-      <span class="bg-black text-white px-2 py-0.5 tracking-wider uppercase flex items-center gap-1">
-        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-acid"></i> OWNER MODE (<span id="ownerTag">ezramatovu08@gmail.com</span>)
-      </span>
-      <span class="hidden md:inline">Click any text on the page to edit it.</span>
+  <!-- ======================================================== -->
+  <!-- 1. TOP OWNER NOTIFICATION BAR (Appears when you log in) -->
+  <!-- ======================================================== -->
+  <div id="ownerBanner" class="hidden bg-hazard text-black px-4 py-2 font-bold text-xs flex items-center justify-between sticky top-0 z-50 shadow-xl border-b border-black">
+    <div class="flex items-center gap-2">
+      <span class="bg-black text-acid px-2 py-0.5 uppercase tracking-wider text-[11px]">OWNER ACTIVE</span>
+      <span>Logged in as <b>ezramatovu08@gmail.com</b>. Click any text to edit directly!</span>
     </div>
     <div class="flex items-center gap-2">
-      <button onclick="openProductModal()" class="bg-black text-acid px-3 py-1 hover:bg-zinc-800 transition flex items-center gap-1">
-        <i data-lucide="plus" class="w-3.5 h-3.5"></i> + ADD DROP
-      </button>
-      <button onclick="logoutAdmin()" class="bg-black text-white px-3 py-1 hover:bg-zinc-900 transition flex items-center gap-1">
-        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> EXIT
-      </button>
-    </div>
-  </aside>
-
-  <!-- ========================================== -->
-  <!-- RUNNING BANNER -->
-  <!-- ========================================== -->
-  <div class="bg-acid text-black py-1.5 px-4 overflow-hidden border-b border-black font-mono font-bold text-xs uppercase tracking-widest flex items-center justify-between">
-    <div class="whitespace-nowrap flex gap-8">
-      <span id="site-ticker" class="editable" data-field="ticker">WORLDWIDE FREIGHT // ARCHIVE DROP 004 // LIMITED STOCK // NO RESTOCKS</span>
-      <span>•</span>
-      <span>AUTHENTIC STREET ARCHIVE</span>
+      <button onclick="openProductModal()" class="bg-black text-white px-3 py-1 hover:bg-zinc-800 transition">+ ADD PRODUCT</button>
+      <button onclick="logoutOwner()" class="bg-white text-black px-3 py-1 hover:bg-zinc-200 transition">LOGOUT</button>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- HEADER -->
-  <!-- ========================================== -->
-  <header class="border-b border-zinc-800 sticky top-0 bg-void/90 backdrop-blur z-30">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-      <a href="#" class="group flex items-center gap-2">
+  <!-- ======================================================== -->
+  <!-- 2. TOP NAVBAR (Stripe & Google Login are Right Here!) -->
+  <!-- ======================================================== -->
+  <header class="border-b border-zinc-800 bg-void/95 sticky top-0 z-40 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between flex-wrap gap-4">
+      
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2">
         <div class="w-3 h-3 bg-acid animate-ping"></div>
-        <span id="site-logo" class="font-heading font-black text-2xl md:text-3xl text-white tracking-tighter uppercase editable" data-field="logo">
+        <span id="site-logo" class="font-heading font-black text-2xl text-white tracking-tighter uppercase editable" data-field="logo">
           DEADSTOCK<span class="text-acid">®</span>
         </span>
       </a>
 
-      <div class="flex items-center gap-4">
-        <button onclick="toggleCart()" class="relative border border-zinc-700 bg-crude px-4 py-2 hover:border-acid transition flex items-center gap-3">
-          <i data-lucide="shopping-bag" class="w-4 h-4 text-acid"></i>
-          <span class="text-xs font-bold text-white tracking-widest uppercase">CRATE (<span id="cartCount">0</span>)</span>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ========================================== -->
-  <!-- HERO BANNER -->
-  <!-- ========================================== -->
-  <section class="border-b border-zinc-800 relative py-16 md:py-24 px-4 overflow-hidden">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
-      
-      <div class="md:col-span-8 space-y-4">
-        <div class="inline-flex items-center gap-2 border border-zinc-700 bg-zinc-900/60 px-3 py-1 text-[11px] text-zinc-400 uppercase tracking-widest">
-          <span class="w-2 h-2 rounded-full bg-hazard"></span> 
-          SEASON 2025 // TOKYO - LONDON - NYC
-        </div>
+      <!-- ACTION BUTTONS -->
+      <div class="flex items-center gap-3">
         
-        <h1 id="site-headline" class="font-heading text-5xl sm:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-tighter uppercase editable" data-field="headline">
-          RAW ARCHIVE <br/><span class="text-transparent bg-clip-text bg-gradient-to-r from-acid to-zinc-600">DESTRUCTION</span>
-        </h1>
-        
-        <p id="site-subheadline" class="text-zinc-400 max-w-xl text-sm leading-relaxed editable" data-field="subheadline">
-          Industrial silhouettes, distressed fleece, and salvaged deadstock hardware. Produced in hyper-limited runs. Never reprinted.
-        </p>
-      </div>
+        <!-- STRIPE CHECKOUT BUTTON (DIRECT) -->
+        <a href="https://buy.stripe.com/dRm4gz3ly7wubnz2sye7m01" target="_blank" rel="noopener noreferrer" class="bg-acid text-black font-bold text-xs px-4 py-2 uppercase tracking-wider hover:bg-white transition flex items-center gap-1.5 shadow-lg shadow-acid/10">
+          <i data-lucide="credit-card" class="w-4 h-4"></i>
+          <span>Pay with Stripe</span>
+        </a>
 
-      <div class="md:col-span-4 border-l-0 md:border-l border-zinc-800 md:pl-8 space-y-3 font-mono text-xs">
-        <div class="p-3 bg-crude border border-zinc-800">
-          <div class="text-zinc-500 uppercase">PAYMENT GATEWAY</div>
-          <div class="text-acid text-sm font-bold mt-1">● STRIPE SECURE CHECKOUT</div>
-          <div class="text-zinc-400 text-[11px] mt-1">ALL MAJOR CARDS & APPLE PAY ACCEPTED</div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ========================================== -->
-  <!-- PRODUCTS GRID -->
-  <!-- ========================================== -->
-  <main id="drops" class="max-w-7xl mx-auto px-4 py-16">
-    <div class="flex items-center justify-between pb-6 border-b border-zinc-800 mb-8">
-      <div>
-        <h2 class="font-heading text-2xl md:text-3xl font-black text-white uppercase tracking-tight">Available Drops</h2>
-        <p class="text-xs text-zinc-500">LIMITED SUPPLY ONLY</p>
-      </div>
-      <div class="text-xs text-zinc-400 font-mono">
-        SHOWING <span id="productCounter" class="text-acid">0</span> ITEMS
-      </div>
-    </div>
-
-    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Injected by JavaScript -->
-    </div>
-  </main>
-
-  <!-- ========================================== -->
-  <!-- FOOTER -->
-  <!-- ========================================== -->
-  <footer class="border-t border-zinc-800 bg-void py-8 px-4 text-xs font-mono text-zinc-500">
-    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div>
-        © <span id="currentYear"></span> DEADSTOCK SYSTEM. ALL RIGHTS RESERVED.
-      </div>
-      <div class="flex items-center gap-6">
-        <!-- TRIGGER GOOGLE OWNER LOGIN -->
-        <button onclick="openLoginModal()" class="text-zinc-600 hover:text-acid flex items-center gap-1 transition">
-          <i data-lucide="lock" class="w-3 h-3"></i> OWNER ACCESS
-        </button>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ========================================== -->
-  <!-- CART DRAWER WITH STRIPE CHECKOUT -->
-  <!-- ========================================== -->
-  <div id="cartDrawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
-    <div onclick="toggleCart()" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
-
-    <aside class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-void border-l border-zinc-800 p-6 flex flex-col justify-between pointer-events-auto transform transition-transform duration-300 translate-x-full">
-      <div>
-        <div class="flex items-center justify-between border-b border-zinc-800 pb-4 mb-6">
-          <div class="flex items-center gap-2">
-            <i data-lucide="archive" class="w-5 h-5 text-acid"></i>
-            <h3 class="font-heading font-black text-lg text-white uppercase tracking-tight">SECURED CRATE</h3>
-          </div>
-          <button onclick="toggleCart()" class="text-zinc-400 hover:text-white p-1">
-            <i data-lucide="x" class="w-5 h-5"></i>
+        <!-- GOOGLE LOGIN / OWNER BUTTON -->
+        <div id="authArea">
+          <button onclick="openGoogleModal()" class="border border-zinc-700 bg-crude text-white hover:border-acid text-xs px-3 py-2 flex items-center gap-2 transition font-bold">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+            </svg>
+            <span id="loginBtnText">Owner Login</span>
           </button>
         </div>
 
-        <div id="cartItemsList" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1"></div>
       </div>
 
-      <div class="border-t border-zinc-800 pt-4 space-y-4">
-        <div class="flex justify-between items-center text-sm font-bold">
-          <span class="text-zinc-400">TOTAL COST:</span>
-          <span id="cartTotalPrice" class="text-acid font-heading text-xl">$0.00</span>
-        </div>
+    </div>
+  </header>
 
-        <!-- STRIPE CHECKOUT BUTTON -->
-        <a id="stripeCheckoutBtn" href="https://buy.stripe.com/dRm4gz3ly7wubnz2sye7m01" target="_blank" rel="noopener noreferrer" class="w-full bg-acid text-black font-heading font-black py-3 tracking-widest uppercase hover:bg-white transition flex items-center justify-center gap-2 text-sm text-center">
-          CHECKOUT WITH STRIPE <i data-lucide="arrow-right" class="w-4 h-4"></i>
-        </a>
-      </div>
-    </aside>
-  </div>
-
-  <!-- ========================================== -->
-  <!-- GOOGLE LOGIN MODAL (OWNER ACCESS) -->
-  <!-- ========================================== -->
-  <div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/90 p-4 backdrop-blur-sm">
-    <div class="border-2 border-acid bg-void max-w-sm w-full p-6 space-y-4 shadow-2xl relative">
-      <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-        <div class="font-heading font-black text-white text-base uppercase flex items-center gap-2">
-          <i data-lucide="shield" class="w-4 h-4 text-acid"></i> Owner Access
-        </div>
-        <button onclick="closeLoginModal()" class="text-zinc-400 hover:text-white">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+  <!-- ======================================================== -->
+  <!-- 3. HERO SECTION -->
+  <!-- ======================================================== -->
+  <section class="border-b border-zinc-800 py-16 px-4">
+    <div class="max-w-7xl mx-auto space-y-4">
+      <div class="inline-block bg-zinc-900 border border-zinc-800 px-3 py-1 text-[11px] text-acid uppercase tracking-widest">
+        ARCHIVE STORE // DIRECT STRIPE CHECKOUT ENABLED
       </div>
       
-      <p class="text-xs text-zinc-400">
-        Sign in with Google. If your email is <strong class="text-acid">ezramatovu08@gmail.com</strong>, the owner console will unlock automatically.
+      <h1 id="site-headline" class="font-heading text-4xl sm:text-6xl lg:text-7xl font-black text-white leading-tight uppercase editable" data-field="headline">
+        HEAVYWEIGHT RAW <br/><span class="text-acid">ARCHIVE SERIES</span>
+      </h1>
+      
+      <p id="site-subheadline" class="text-zinc-400 max-w-xl text-sm editable" data-field="subheadline">
+        Hyper-limited production. Sourced remnants, custom dyes, numbered serial labels.
       </p>
 
-      <!-- Google Sign In Button -->
-      <button onclick="signInWithGoogle()" class="w-full bg-white text-black font-bold py-2.5 px-4 rounded text-xs flex items-center justify-center gap-2 hover:bg-zinc-200 transition">
-        <svg class="w-4 h-4" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-        </svg>
+      <div class="pt-2">
+        <a href="https://buy.stripe.com/dRm4gz3ly7wubnz2sye7m01" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-white text-black font-heading font-black text-xs px-6 py-3 tracking-widest uppercase hover:bg-acid transition">
+          Direct Stripe Checkout <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 4. PRODUCTS SECTION -->
+  <!-- ======================================================== -->
+  <main class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between pb-4 border-b border-zinc-800 mb-8">
+      <h2 class="font-heading text-2xl font-black text-white uppercase">Active Items</h2>
+      <span class="text-xs text-zinc-500 font-mono">PAYMENTS POWERED BY STRIPE</span>
+    </div>
+
+    <!-- Product Grid -->
+    <div id="productGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Items generated by JavaScript -->
+    </div>
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- 5. GOOGLE LOGIN POPUP -->
+  <!-- ======================================================== -->
+  <div id="googleModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/80 backdrop-blur-sm p-4">
+    <div class="bg-crude border-2 border-zinc-700 max-w-sm w-full p-6 space-y-4 text-center">
+      <h3 class="font-heading font-black text-white text-lg">GOOGLE SIGN IN</h3>
+      <p class="text-xs text-zinc-400">
+        Enter your Google account email below.<br>
+        Owner account: <b class="text-acid">ezramatovu08@gmail.com</b>
+      </p>
+
+      <input id="googleEmailInput" type="email" placeholder="name@gmail.com" class="w-full bg-void border border-zinc-700 px-3 py-2 text-white text-xs outline-none focus:border-acid" value="ezramatovu08@gmail.com">
+
+      <button onclick="handleGoogleSignIn()" class="w-full bg-white text-black font-bold py-2.5 text-xs uppercase hover:bg-acid transition flex items-center justify-center gap-2">
         Sign in with Google
+      </button>
+
+      <button onclick="closeGoogleModal()" class="text-zinc-500 text-xs hover:text-white underline block mx-auto">
+        Cancel
       </button>
     </div>
   </div>
 
-  <!-- ========================================== -->
-  <!-- ADD/EDIT ITEM MODAL -->
-  <!-- ========================================== -->
-  <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/90 p-4 backdrop-blur-sm">
-    <div class="border-2 border-acid bg-void max-w-md w-full p-6 space-y-4 shadow-2xl relative">
-      <div class="flex justify-between items-center border-b border-zinc-800 pb-3">
-        <div id="productModalTitle" class="font-heading font-black text-white text-base uppercase">New Archive Drop</div>
-        <button onclick="closeProductModal()" class="text-zinc-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
-      </div>
+  <!-- ======================================================== -->
+  <!-- 6. ADD PRODUCT MODAL (OWNER ONLY) -->
+  <!-- ======================================================== -->
+  <div id="productModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black/80 p-4">
+    <div class="bg-crude border border-acid max-w-md w-full p-6 space-y-3 text-xs">
+      <h3 class="font-heading font-black text-white text-base">ADD NEW ITEM</h3>
+      
+      <input id="newTitle" type="text" placeholder="Product Name" class="w-full bg-void border border-zinc-700 p-2 text-white">
+      <input id="newPrice" type="number" placeholder="Price ($)" class="w-full bg-void border border-zinc-700 p-2 text-white">
+      <input id="newImg" type="url" placeholder="Image URL (https://...)" class="w-full bg-void border border-zinc-700 p-2 text-white">
+      <textarea id="newDesc" placeholder="Description" rows="2" class="w-full bg-void border border-zinc-700 p-2 text-white"></textarea>
 
-      <form onsubmit="saveProduct(event)" class="space-y-3 text-xs">
-        <input type="hidden" id="prodEditId">
-        <div>
-          <label class="block text-zinc-400 mb-1">Title</label>
-          <input id="prodTitle" type="text" required class="w-full bg-crude border border-zinc-700 px-3 py-2 text-white focus:border-acid outline-none">
-        </div>
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-zinc-400 mb-1">Price ($ USD)</label>
-            <input id="prodPrice" type="number" step="0.01" required class="w-full bg-crude border border-zinc-700 px-3 py-2 text-white focus:border-acid outline-none">
-          </div>
-          <div>
-            <label class="block text-zinc-400 mb-1">Edition Tag</label>
-            <input id="prodTag" type="text" class="w-full bg-crude border border-zinc-700 px-3 py-2 text-white focus:border-acid outline-none" placeholder="01/50 - RARE">
-          </div>
-        </div>
-        <div>
-          <label class="block text-zinc-400 mb-1">Image URL</label>
-          <input id="prodImg" type="url" required class="w-full bg-crude border border-zinc-700 px-3 py-2 text-white focus:border-acid outline-none">
-        </div>
-        <div>
-          <label class="block text-zinc-400 mb-1">Description</label>
-          <textarea id="prodDesc" rows="3" class="w-full bg-crude border border-zinc-700 px-3 py-2 text-white focus:border-acid outline-none"></textarea>
-        </div>
-        <button type="submit" class="w-full bg-acid text-black font-bold py-2.5 uppercase tracking-widest hover:bg-white transition">Save Drop Item</button>
-      </form>
+      <div class="flex gap-2 pt-2">
+        <button onclick="addNewProduct()" class="flex-1 bg-acid text-black font-bold py-2 uppercase">Save Product</button>
+        <button onclick="closeProductModal()" class="px-4 bg-zinc-800 text-white py-2">Close</button>
+      </div>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-acid text-black font-bold font-mono text-xs px-4 py-3 border-2 border-black shadow-2xl transition-all duration-300 translate-y-20 opacity-0"></div>
-
-  <!-- ========================================== -->
-  <!-- LOGIC SCRIPT -->
-  <!-- ========================================== -->
+  <!-- ======================================================== -->
+  <!-- 7. SCRIPT LOGIC -->
+  <!-- ======================================================== -->
   <script>
     const OWNER_EMAIL = "ezramatovu08@gmail.com";
-    const STRIPE_URL = "https://buy.stripe.com/dRm4gz3ly7wubnz2sye7m01";
+    const STRIPE_LINK = "https://buy.stripe.com/dRm4gz3ly7wubnz2sye7m01";
 
-    // Products Data
-    const DEFAULT_PRODUCTS = [
+    let isOwner = localStorage.getItem('isOwner') === 'true';
+
+    // Default Products
+    let products = JSON.parse(localStorage.getItem('products')) || [
       {
-        id: "p1",
-        title: "HEAVY ACID-WASH HOODIE",
+        id: "1",
+        title: "ACID-WASH OVERSIZED HOODIE",
         price: 135,
-        tag: "LIMITED // 01 OF 40",
-        desc: "500 GSM loopback cotton. Stone-wash finish with hand-distressed edges.",
-        img: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80"
+        img: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
+        desc: "500 GSM loopback cotton. Stone-wash finish with hand-distressed edges."
       },
       {
-        id: "p2",
-        title: "TACTICAL CARGO PANTS",
+        id: "2",
+        title: "CARGO PARACHUTE TROUSERS",
         price: 165,
-        tag: "RESTOCK NEVER",
-        desc: "Double-knee reinforced panels with heavy matte industrial zippers.",
-        img: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=800&q=80"
+        img: "https://images.unsplash.com/photo-1517445312882-bc9910d016b7?auto=format&fit=crop&w=800&q=80",
+        desc: "Double-knee reinforced panels with heavy matte industrial zippers."
       },
       {
-        id: "p3",
-        title: "OVERSIZED HEAVY TEE",
+        id: "3",
+        title: "RAW ARCHIVE JERSEY TEE",
         price: 68,
-        tag: "CORE ITEM",
-        desc: "280 GSM single jersey raw knit. Silk-screened archival ink front logo.",
-        img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80"
+        img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80",
+        desc: "280 GSM single jersey raw knit. Silk-screened archival ink front logo."
       }
     ];
 
-    let products = JSON.parse(localStorage.getItem('ds_products')) || DEFAULT_PRODUCTS;
-    let cart = JSON.parse(localStorage.getItem('ds_cart')) || [];
-    let isOwner = localStorage.getItem('ds_owner_logged') === 'true';
-
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("currentYear").textContent = new Date().getFullYear();
-      loadCustomContent();
       renderProducts();
-      updateCartUI();
-      checkOwnerStatus();
+      applyOwnerState();
+      loadSavedText();
       lucide.createIcons();
     });
 
-    // Render Drop Cards
+    // Render Product Cards
     function renderProducts() {
       const grid = document.getElementById("productGrid");
-      document.getElementById("productCounter").textContent = products.length;
-
-      grid.innerHTML = products.map(item => `
-        <div class="glitch-border bg-crude flex flex-col justify-between group relative overflow-hidden transition-all duration-200">
-          <div class="relative aspect-square overflow-hidden bg-zinc-900 border-b border-zinc-800">
-            <img src="${item.img}" alt="${item.title}" class="w-full h-full object-cover grayscale contrast-125 group-hover:scale-105 group-hover:grayscale-0 transition-all duration-500">
-            <div class="absolute top-3 left-3 bg-black/90 border border-zinc-700 px-2 py-0.5 text-[10px] text-acid font-bold uppercase tracking-wider">
-              ${item.tag || 'ARCHIVE'}
-            </div>
-            ${isOwner ? `
-              <div class="absolute top-3 right-3 flex gap-1 z-10">
-                <button onclick="editProduct('${item.id}')" class="bg-acid text-black p-1.5 hover:bg-white text-xs font-bold"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
-                <button onclick="deleteProduct('${item.id}')" class="bg-hazard text-white p-1.5 hover:bg-black text-xs font-bold"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
-              </div>
-            ` : ''}
-          </div>
-          <div class="p-5 flex flex-col justify-between flex-grow space-y-4">
-            <div>
-              <div class="flex items-start justify-between gap-2">
-                <h3 class="font-heading font-black text-white text-lg tracking-tight uppercase">${item.title}</h3>
-                <span class="font-heading font-black text-acid text-lg">$${parseFloat(item.price).toFixed(2)}</span>
-              </div>
-              <p class="text-xs text-zinc-400 mt-2 line-clamp-2">${item.desc}</p>
-            </div>
-            <button onclick="addToCart('${item.id}')" class="w-full bg-void border border-zinc-700 hover:border-acid hover:bg-acid hover:text-black text-white font-mono text-xs font-bold py-2.5 uppercase tracking-wider transition flex items-center justify-center gap-2">
-              <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add to Crate
+      grid.innerHTML = products.map(p => `
+        <div class="glitch-border bg-crude flex flex-col justify-between p-4 space-y-4 relative">
+          
+          ${isOwner ? `
+            <button onclick="deleteProduct('${p.id}')" class="absolute top-2 right-2 bg-hazard text-white text-[10px] px-2 py-1 font-bold z-10 hover:bg-black">
+              DELETE
             </button>
+          ` : ''}
+
+          <div class="aspect-square overflow-hidden bg-zinc-900 border border-zinc-800">
+            <img src="${p.img}" class="w-full h-full object-cover">
           </div>
+
+          <div>
+            <div class="flex items-center justify-between">
+              <h3 class="font-heading font-black text-white text-base">${p.title}</h3>
+              <span class="font-heading text-acid font-bold">$${p.price}</span>
+            </div>
+            <p class="text-xs text-zinc-400 mt-1">${p.desc}</p>
+          </div>
+
+          <!-- DIRECT STRIPE CHECKOUT BUTTON PER ITEM -->
+          <a href="${STRIPE_LINK}" target="_blank" rel="noopener noreferrer" class="w-full bg-zinc-900 hover:bg-acid hover:text-black text-white text-xs font-bold py-2.5 text-center uppercase border border-zinc-700 hover:border-acid transition flex items-center justify-center gap-1.5">
+            <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Buy with Stripe
+          </a>
         </div>
       `).join('');
       lucide.createIcons();
     }
 
-    // Cart System
-    function addToCart(id) {
-      const prod = products.find(p => p.id === id);
-      if (!prod) return;
-      const found = cart.find(i => i.id === id);
-      if (found) found.qty++;
-      else cart.push({ ...prod, qty: 1 });
-      saveCart();
-      showToast(`ADDED: ${prod.title}`);
-      updateCartUI();
-    }
+    // Google Sign-In Handling
+    function openGoogleModal() { document.getElementById("googleModal").classList.remove("hidden"); }
+    function closeGoogleModal() { document.getElementById("googleModal").classList.add("hidden"); }
 
-    function changeQty(id, delta) {
-      const item = cart.find(i => i.id === id);
-      if (!item) return;
-      item.qty += delta;
-      if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
-      saveCart();
-      updateCartUI();
-    }
-
-    function saveCart() {
-      localStorage.setItem('ds_cart', JSON.stringify(cart));
-    }
-
-    function updateCartUI() {
-      const count = document.getElementById("cartCount");
-      const list = document.getElementById("cartItemsList");
-      const total = document.getElementById("cartTotalPrice");
-
-      const sumQty = cart.reduce((s, i) => s + i.qty, 0);
-      const sumPrice = cart.reduce((s, i) => s + (i.price * i.qty), 0);
-
-      count.textContent = sumQty;
-      total.textContent = `$${sumPrice.toFixed(2)}`;
-
-      if (cart.length === 0) {
-        list.innerHTML = `<div class="text-zinc-600 text-xs py-12 text-center uppercase">// CRATE IS EMPTY</div>`;
-        return;
-      }
-
-      list.innerHTML = cart.map(item => `
-        <div class="flex items-center gap-3 bg-crude border border-zinc-800 p-2.5">
-          <img src="${item.img}" class="w-14 h-14 object-cover border border-zinc-700">
-          <div class="flex-grow">
-            <h4 class="text-xs font-bold text-white uppercase">${item.title}</h4>
-            <div class="text-xs text-acid font-bold mt-1">$${(item.price * item.qty).toFixed(2)}</div>
-            <div class="flex items-center gap-2 mt-1 text-xs">
-              <button onclick="changeQty('${item.id}', -1)" class="w-5 h-5 bg-zinc-800 text-white hover:bg-zinc-700">-</button>
-              <span class="text-zinc-300">${item.qty}</span>
-              <button onclick="changeQty('${item.id}', 1)" class="w-5 h-5 bg-zinc-800 text-white hover:bg-zinc-700">+</button>
-            </div>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function toggleCart() {
-      const drawer = document.getElementById("cartDrawer");
-      const aside = drawer.querySelector("aside");
-      if (drawer.classList.contains("opacity-0")) {
-        drawer.classList.remove("opacity-0", "pointer-events-none");
-        aside.classList.remove("translate-x-full");
-      } else {
-        drawer.classList.add("opacity-0", "pointer-events-none");
-        aside.classList.add("translate-x-full");
-      }
-    }
-
-    // Google Sign-In & Owner Status
-    function openLoginModal() { document.getElementById("loginModal").classList.remove("hidden"); }
-    function closeLoginModal() { document.getElementById("loginModal").classList.add("hidden"); }
-
-    function signInWithGoogle() {
-      // Direct email check for Owner
-      const enteredEmail = prompt("Confirm your Google Account Email:", OWNER_EMAIL);
-      if (enteredEmail && enteredEmail.trim().toLowerCase() === OWNER_EMAIL.toLowerCase()) {
+    function handleGoogleSignIn() {
+      const email = document.getElementById("googleEmailInput").value.trim().toLowerCase();
+      
+      if (email === OWNER_EMAIL.toLowerCase()) {
         isOwner = true;
-        localStorage.setItem('ds_owner_logged', 'true');
-        closeLoginModal();
-        checkOwnerStatus();
-        showToast("WELCOME EZRA // OWNER CONSOLE READY");
-      } else if (enteredEmail) {
-        alert("Signed in as customer: " + enteredEmail + ". Store view active.");
-        closeLoginModal();
+        localStorage.setItem('isOwner', 'true');
+        closeGoogleModal();
+        applyOwnerState();
+        alert("Authenticated as Owner (ezramatovu08@gmail.com). You can now edit text on screen!");
+      } else {
+        alert("Logged in as customer: " + email);
+        closeGoogleModal();
       }
     }
 
-    function logoutAdmin() {
+    function logoutOwner() {
       isOwner = false;
-      localStorage.removeItem('ds_owner_logged');
-      checkOwnerStatus();
-      showToast("SIGNED OUT");
+      localStorage.removeItem('isOwner');
+      applyOwnerState();
+      alert("Signed out.");
     }
 
-    function checkOwnerStatus() {
-      const adminBar = document.getElementById("adminBar");
+    // Enable/Disable Edit Mode
+    function applyOwnerState() {
+      const banner = document.getElementById("ownerBanner");
+      const loginText = document.getElementById("loginBtnText");
       const editables = document.querySelectorAll(".editable");
 
       if (isOwner) {
-        adminBar.classList.remove("hidden");
-        document.body.classList.add("pt-10");
+        banner.classList.remove("hidden");
+        loginText.textContent = "Owner Logged In";
         editables.forEach(el => {
           el.setAttribute("contenteditable", "true");
-          el.classList.add("editable-active");
-          el.addEventListener("blur", saveInlineText);
+          el.classList.add("editable-box");
+          el.onblur = () => {
+            let saved = JSON.parse(localStorage.getItem('saved_text')) || {};
+            saved[el.getAttribute('data-field')] = el.innerHTML;
+            localStorage.setItem('saved_text', JSON.stringify(saved));
+          };
         });
       } else {
-        adminBar.classList.add("hidden");
-        document.body.classList.remove("pt-10");
+        banner.classList.add("hidden");
+        loginText.textContent = "Owner Login";
         editables.forEach(el => {
           el.removeAttribute("contenteditable");
-          el.classList.remove("editable-active");
+          el.classList.remove("editable-box");
         });
       }
       renderProducts();
     }
 
-    function saveInlineText(e) {
-      const field = e.target.getAttribute("data-field");
-      let textStore = JSON.parse(localStorage.getItem("ds_text")) || {};
-      textStore[field] = e.target.innerHTML;
-      localStorage.setItem("ds_text", JSON.stringify(textStore));
-      showToast("CHANGES SAVED");
-    }
-
-    function loadCustomContent() {
-      const saved = JSON.parse(localStorage.getItem("ds_text"));
+    function loadSavedText() {
+      const saved = JSON.parse(localStorage.getItem('saved_text'));
       if (!saved) return;
       document.querySelectorAll(".editable").forEach(el => {
         const field = el.getAttribute("data-field");
@@ -500,67 +319,31 @@
       });
     }
 
-    // Product Add/Edit
-    function openProductModal() {
-      document.getElementById("prodEditId").value = "";
-      document.getElementById("prodTitle").value = "";
-      document.getElementById("prodPrice").value = "";
-      document.getElementById("prodTag").value = "";
-      document.getElementById("prodImg").value = "";
-      document.getElementById("prodDesc").value = "";
-      document.getElementById("productModalTitle").textContent = "NEW DROP ITEM";
-      document.getElementById("productModal").classList.remove("hidden");
-    }
+    // Product Add/Delete
+    function openProductModal() { document.getElementById("productModal").classList.remove("hidden"); }
     function closeProductModal() { document.getElementById("productModal").classList.add("hidden"); }
 
-    function editProduct(id) {
-      const item = products.find(p => p.id === id);
-      if (!item) return;
-      document.getElementById("prodEditId").value = item.id;
-      document.getElementById("prodTitle").value = item.title;
-      document.getElementById("prodPrice").value = item.price;
-      document.getElementById("prodTag").value = item.tag || "";
-      document.getElementById("prodImg").value = item.img;
-      document.getElementById("prodDesc").value = item.desc || "";
-      document.getElementById("productModalTitle").textContent = "EDIT DROP ITEM";
-      document.getElementById("productModal").classList.remove("hidden");
-    }
+    function addNewProduct() {
+      const title = document.getElementById("newTitle").value;
+      const price = document.getElementById("newPrice").value;
+      const img = document.getElementById("newImg").value;
+      const desc = document.getElementById("newDesc").value;
 
-    function saveProduct(e) {
-      e.preventDefault();
-      const id = document.getElementById("prodEditId").value;
-      const title = document.getElementById("prodTitle").value.trim();
-      const price = parseFloat(document.getElementById("prodPrice").value);
-      const tag = document.getElementById("prodTag").value.trim();
-      const img = document.getElementById("prodImg").value.trim();
-      const desc = document.getElementById("prodDesc").value.trim();
-
-      if (id) {
-        const idx = products.findIndex(p => p.id === id);
-        if (idx !== -1) products[idx] = { ...products[idx], title, price, tag, img, desc };
-      } else {
-        products.unshift({ id: 'drop_' + Date.now(), title, price, tag, img, desc });
+      if (!title || !price || !img) {
+        alert("Please fill in Title, Price, and Image URL.");
+        return;
       }
 
-      localStorage.setItem("ds_products", JSON.stringify(products));
+      products.unshift({ id: 'p_' + Date.now(), title, price, img, desc });
+      localStorage.setItem('products', JSON.stringify(products));
       renderProducts();
       closeProductModal();
-      showToast("DROPS UPDATED");
     }
 
     function deleteProduct(id) {
-      if (!confirm("Delete this drop?")) return;
       products = products.filter(p => p.id !== id);
-      localStorage.setItem("ds_products", JSON.stringify(products));
+      localStorage.setItem('products', JSON.stringify(products));
       renderProducts();
-      showToast("DELETED");
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById("toast");
-      toast.textContent = msg;
-      toast.classList.remove("translate-y-20", "opacity-0");
-      setTimeout(() => toast.classList.add("translate-y-20", "opacity-0"), 2200);
     }
   </script>
 </body>
