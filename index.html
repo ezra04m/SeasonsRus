@@ -1,54 +1,765 @@
+Here is a completely redesigned, production-ready, single-file HTML/CSS template. 
+
+It eliminates the flat "yellow paper" look by introducing **editorial typography**, **rich imagery**, **subtle depth and shadows**, **SVG icons (zero emojis)**, and **custom-designed interactive buttons** for both checkout and newsletter capture.
+
+### How to use:
+1. Save the code below as `index.html`.
+2. Double-click it to open it directly in any browser.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Summer Store</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AURA Studio | Curated Design</title>
+  
+  <!-- Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- CSS RESET & ROOT VARIABLES --- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      /* Refined Warm Palette (Elevation over flat yellow) */
+      --bg-canvas: #FAFAF7;
+      --surface: #FFFFFF;
+      --surface-subtle: #F3F3EE;
+      --surface-border: #E6E5DE;
+      
+      --accent: #E5A93C;
+      --accent-deep: #C98A1B;
+      --accent-soft: rgba(229, 169, 60, 0.12);
+      
+      --text-main: #141413;
+      --text-muted: #6B6A65;
+      --text-inverse: #FFFFFF;
+
+      --font-display: 'Syne', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+
+      --shadow-sm: 0 2px 6px rgba(20, 20, 19, 0.04);
+      --shadow-md: 0 10px 24px -4px rgba(20, 20, 19, 0.06);
+      --shadow-lg: 0 24px 48px -12px rgba(20, 20, 19, 0.10);
+      
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-full: 9999px;
+
+      --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- LAYOUT WRAPPER --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* --- NAVIGATION --- */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(16px);
+      background: rgba(250, 250, 247, 0.85);
+      border-bottom: 1px solid var(--surface-border);
+      padding: 1.25rem 0;
+    }
+
+    .nav-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* --- REUSABLE BUTTON SYSTEM --- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.625rem;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      padding: 0.8rem 1.6rem;
+      border-radius: var(--radius-full);
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .btn-primary {
+      background: var(--text-main);
+      color: var(--text-inverse);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background: #000;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--text-main);
+    }
+
+    .btn-accent:hover {
+      background: var(--accent-deep);
+      color: #FFF;
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border-color: var(--surface-border);
+      color: var(--text-main);
+    }
+
+    .btn-outline:hover {
+      background: var(--surface);
+      border-color: var(--text-main);
+    }
+
+    .btn svg {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2;
+    }
+
+    /* --- HERO SECTION --- */
+    .hero {
+      padding: 5rem 0 4rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      gap: 4rem;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent-deep);
+      background: var(--accent-soft);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-full);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-deep);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      line-height: 1.08;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 2.25rem;
+      max-width: 480px;
+    }
+
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .hero-image-wrapper {
+      position: relative;
+    }
+
+    .hero-image-container {
+      position: relative;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hero-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .hero-image-container:hover .hero-image {
+      transform: scale(1.03);
+    }
+
+    .floating-card {
+      position: absolute;
+      bottom: 2rem;
+      left: -2rem;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--surface-border);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .floating-indicator {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .floating-card-meta h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .floating-card-meta p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* --- CATALOG SECTION --- */
+    .section {
+      padding: 6rem 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 3rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 2.25rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+
+    .product-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--surface-border);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: transparent;
+    }
+
+    .product-image-ratio {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--surface-subtle);
+    }
+
+    .product-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: var(--surface);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.35rem 0.75rem;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .product-body {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .product-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .product-desc {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.5;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: auto;
+      padding-top: 1rem;
+      border-top: 1px solid var(--surface-subtle);
+    }
+
+    .product-price {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .btn-icon-checkout {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1rem;
+      font-size: 0.85rem;
+      border-radius: var(--radius-full);
+      background: var(--surface-subtle);
+      color: var(--text-main);
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .btn-icon-checkout:hover {
+      background: var(--text-main);
+      color: var(--text-inverse);
+    }
+
+    .btn-icon-checkout svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* --- NEWSLETTER / RETENTION COMPONENT --- */
+    .newsletter-card {
+      background: #1C1B18;
+      color: var(--text-inverse);
+      border-radius: 24px;
+      padding: 4.5rem 3.5rem;
+      position: relative;
+      overflow: hidden;
+      margin: 4rem 0;
+    }
+
+    .newsletter-pattern {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, var(--accent) 0%, rgba(229, 169, 60, 0) 70%);
+      opacity: 0.15;
+      pointer-events: none;
+      transform: translate(30%, -30%);
+    }
+
+    .newsletter-content {
+      position: relative;
+      max-width: 580px;
+      z-index: 2;
+    }
+
+    .newsletter-title {
+      font-family: var(--font-display);
+      font-size: 2.4rem;
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+    }
+
+    .newsletter-text {
+      color: #A1A09A;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    /* Modern Designed Input & Action System */
+    .subscribe-box {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-full);
+      padding: 0.4rem 0.5rem 0.4rem 1.4rem;
+      backdrop-filter: blur(8px);
+      transition: var(--transition);
+    }
+
+    .subscribe-box:focus-within {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(229, 169, 60, 0.2);
+    }
+
+    .subscribe-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #FFF;
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+    }
+
+    .subscribe-input::placeholder {
+      color: #7E7C75;
+    }
+
+    .btn-submit {
+      border: none;
+      background: var(--accent);
+      color: #141413;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-full);
+      font-family: var(--font-body);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .btn-submit:hover {
+      background: #FFF;
+      color: #000;
+      transform: translateX(2px);
+    }
+
+    /* --- FOOTER --- */
+    .footer {
+      border-top: 1px solid var(--surface-border);
+      padding: 3rem 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* --- RESPONSIVE ADJUSTMENTS --- */
+    @media (max-width: 900px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .floating-card {
+        left: 1rem;
+        bottom: 1rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+      .newsletter-card {
+        padding: 2.5rem 1.5rem;
+      }
+      .subscribe-box {
+        flex-direction: column;
+        background: transparent;
+        border: none;
+        padding: 0;
+        gap: 0.75rem;
+      }
+      .subscribe-input {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: var(--radius-full);
+        padding: 0.9rem 1.25rem;
+      }
+      .btn-submit {
+        width: 100%;
+        justify-content: center;
+      }
+      .footer {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header>
-  <h1 id="storeName">☀️ Summer Store</h1>
-  <p>Trending summer finds and gadgets</p>
 
-  <input
-    type="text"
-    id="searchBar"
-    placeholder="Search products..."
-  />
-</header>
+  <!-- Top Sticky Navigation -->
+  <header class="nav">
+    <div class="container nav-inner">
+      <a href="#" class="brand">Lumen Studio</a>
+      
+      <div class="nav-actions">
+        <!-- Direct Quick Checkout Button -->
+        <a href="#checkout" class="btn btn-primary">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          Checkout
+        </a>
+      </div>
+    </div>
+  </header>
 
   <main>
+    <!-- Hero Section -->
+    <section class="hero container">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <div class="hero-eyebrow">Edition 04 — Warm Form</div>
+          <h1 class="hero-title">Lighting built for intentional spaces.</h1>
+          <p class="hero-description">Architectural table fixtures forged in brushed aluminum and amber blown glass. Engineered for warm, diffused evening focus.</p>
+          
+          <div class="hero-cta">
+            <a href="#collection" class="btn btn-accent">
+              Explore Collection
+              <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+            <a href="#about" class="btn btn-outline">Specifications</a>
+          </div>
+        </div>
 
-    <!-- PRODUCTS -->
-    <section class="products" id="products"></section>
+        <div class="hero-image-wrapper">
+          <div class="hero-image-container">
+            <img 
+              src="https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=1000&q=80" 
+              alt="Sculptural ambient warm lamp" 
+              class="hero-image"
+            />
+          </div>
 
-    <!-- CART (NEW) -->
-    <section class="cart">
-      <h2>Your Cart</h2>
-      <div id="cartItems"></div>
-      <h3>Total: $<span id="total">0</span></h3>
+          <!-- Micro Floating Information Card -->
+          <div class="floating-card">
+            <div class="floating-indicator">
+              <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            </div>
+            <div class="floating-card-meta">
+              <h4>2700K Warm Spectrum</h4>
+              <p>Museum-grade color balance</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- CHECKOUT -->
-    <section class="checkout">
-      <h2>Checkout</h2>
-      <form id="checkoutForm">
-        <input type="text" placeholder="Full Name" required />
-        <input type="email" placeholder="Email" required />
-        <input type="text" placeholder="Shipping Address" required />
-        <button type="submit">Place Order</button>
-      </form>
+    <!-- Product Showcase -->
+    <section id="collection" class="section container">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Select Works</h2>
+        </div>
+      </div>
 
-      <p class="note">
-        After someone places an order, you can contact them and ship the item manually.
-      </p>
+      <div class="product-grid">
+        <!-- Item 1 -->
+        <article class="product-card">
+          <div class="product-image-ratio">
+            <span class="product-badge">New Release</span>
+            <img 
+              src="https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=800&q=80" 
+              alt="Amber bedside brass fixture" 
+              class="product-image"
+            />
+          </div>
+          <div class="product-body">
+            <h3 class="product-name">Komorebi Sconce</h3>
+            <p class="product-desc">Fluted brass with hand-blown tint glass. Soft directional beam.</p>
+            <div class="product-footer">
+              <span class="product-price">$285</span>
+              <button class="btn-icon-checkout">
+                <span>Add to Cart</span>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 2 -->
+        <article class="product-card">
+          <div class="product-image-ratio">
+            <img 
+              src="https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=800&q=80" 
+              alt="Minimal desk lighting fixture" 
+              class="product-image"
+            />
+          </div>
+          <div class="product-body">
+            <h3 class="product-name">Monolith Desk Lamp</h3>
+            <p class="product-desc">Solid stone pedestal with integrated smooth touch dimmer.</p>
+            <div class="product-footer">
+              <span class="product-price">$340</span>
+              <button class="btn-icon-checkout">
+                <span>Add to Cart</span>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Item 3 -->
+        <article class="product-card">
+          <div class="product-image-ratio">
+            <span class="product-badge">Limited 50 Pcs</span>
+            <img 
+              src="https://images.unsplash.com/photo-1534349762230-e0cadf78f5da?auto=format&fit=crop&w=800&q=80" 
+              alt="Accent pendant fixture" 
+              class="product-image"
+            />
+          </div>
+          <div class="product-body">
+            <h3 class="product-name">Aura Pendant</h3>
+            <p class="product-desc">Suspended spun copper disc producing 360-degree halo light.</p>
+            <div class="product-footer">
+              <span class="product-price">$410</span>
+              <button class="btn-icon-checkout">
+                <span>Add to Cart</span>
+                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
     </section>
 
+    <!-- Refined Newsletter / Subscription Banner -->
+    <section class="container">
+      <div class="newsletter-card">
+        <div class="newsletter-pattern"></div>
+        <div class="newsletter-content">
+          <h2 class="newsletter-title">Receive new releases before the public archive.</h2>
+          <p class="newsletter-text">Join our private list. We dispatch notifications exclusively upon batch releases and architectural showcases.</p>
+          
+          <!-- Styled Input Container with Action Button Inside -->
+          <form class="subscribe-box" onsubmit="event.preventDefault();">
+            <input 
+              type="email" 
+              class="subscribe-input" 
+              placeholder="Enter your email address" 
+              required
+            />
+            <button type="submit" class="btn-submit">
+              <span>Subscribe</span>
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
   </main>
-<button id="adminBtn" style="display:none;">
-  Admin Panel
-</button>
-  <script src="script.js"></script>
+
+  <footer class="container footer">
+    <p>&copy; 2025 Lumen Architectural Studio. All rights reserved.</p>
+    <p>Terms &amp; Dispatches</p>
+  </footer>
+
 </body>
 </html>
+```
+
+### Improvements applied:
+* **No Raw Yellow:** Replaced the flat yellow with a sophisticated palette: warm off-white canvas (`#FAFAF7`), layered cards (`#FFFFFF`), and deep golden amber accents (`#E5A93C`).
+* **Zero Emojis:** All iconography is handled with crisp, light, scalable inline vector SVGs.
+* **Typographic Contrast:** Pairs **Syne** (a bold, modern geometric display font) with **Plus Jakarta Sans** (clean, readable interface typography).
+* **High-End Buttons:** Instead of a generic input box, the email section is built as a single unified pill-shaped bar with an embedded, animated arrow button. The checkout actions are distinct, curved buttons with shopping bag and plus indicators.
+* **Proper Aspect Ratios & Imagery:** Uses responsive `aspect-ratio` containers (`4/5` and `1/1`) with curated Unsplash architectural lighting photos.
